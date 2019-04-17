@@ -1,0 +1,54 @@
+
+The firmware for the MUSBFSFC comprises the following files:
+
+
+        musbfsfc.c      - Top level of the MUSBFSFC interrupt service routine.
+
+        endpoint0.c     - Handler for endpoint 0.
+
+        endpoint.c      - Handler for data endpoints.
+
+        reset.c         - USB reset routine.
+
+        desc.c          - Initialisation of standard descriptors.
+
+        fifo.c          - MUSBFSFC FIFO read/write routines.
+
+
+        musbfsfc.h      - Header file containing MUSBFSFC constants and
+ MUSBFSFC register read/write macros.
+
+        endpoint0.h     - Header file containing constants and structures for
+ endpoint 0.
+
+        endpoint.h      - Header file containing constants and structures for
+ data endpoints.
+
+        descript.h      - Header file containing constants and structures for
+  descriptor handling.
+
+        config.h        - Header file containing constants and structures for
+ the user's particular configuration.
+
+
+
+The following files need to be modified by the user for their configuration:
+
+
+    config.h    - Constants need to be modified for the user's descriptors.
+
+                  Structures need to be defined for each configuration supported.
+
+    musbfsfc.h  - The macros for MUSBFSFC register read/write and
+ 
+                 the register base address need to be defined.
+
+    fifo.c      - The MUSBFSFC FIFO read/write routines may need to be modified.
+
+
+
+Note the descriptor structures defined in config.h assume 16-bit words are stored
+little-endian.
+If a big-endian processor is used, the byte order will need to be
+swapped for 16-bit words.
+
