@@ -182,6 +182,7 @@
             // 
             resources.ApplyResources(this.label_state, "label_state");
             this.label_state.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.label_state.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.label_state.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.label_state.Name = "label_state";
             this.label_state.Click += new System.EventHandler(this.label5_Click);
@@ -230,7 +231,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "LoadTool";
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Load += new System.EventHandler(this.LoadTool_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

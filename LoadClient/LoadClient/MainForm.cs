@@ -118,31 +118,41 @@ namespace LoadClient
                 Bytefpga.CopyTo(send, data.Length + startaddr.Length + Bytefrmat.Length);
                 try
                 {
+                   
                     streamToServer.Write(send, 0, send.Length);
-                    streamToServer.Read(data, 0, 8);
-                    Console.WriteLine("file info OK " + startAddr + fileLen);
-                    //todo 判断接收数据
-#if true
-                    if ((startAddr != BitConverter.ToUInt32(data, 0))
-                   || fileLen != (BitConverter.ToUInt32(data, 4)))    //处理异常
+                   
+                    while (true)
                     {
-                        if ((0 == BitConverter.ToUInt32(data, 0)) &&
-                        0 == (BitConverter.ToUInt32(data, 4)))
+                        streamToServer.Read(data, 0, 8);
+                        Console.WriteLine("file info OK " + data);
+                        //todo 判断接收数据
+#if true
+                        if ((startAddr != BitConverter.ToUInt32(data, 0))
+                       || fileLen != (BitConverter.ToUInt32(data, 4)))    //处理异常
                         {
-                            label_state.ForeColor = Color.Red;
-                            label_state.Text = "Pin Locked ";
-
-
+                            if ((0 == BitConverter.ToUInt32(data, 0)) &&
+                            0 == (BitConverter.ToUInt32(data, 4)))
+                            {
+                                label_state.ForeColor = Color.Red;
+                                label_state.Text = "Pin Locked ";
+                            }
+                            else if ((0 == BitConverter.ToUInt32(data, 0)) &&
+                                    0 != (BitConverter.ToUInt32(data, 4)))
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                label_state.ForeColor = Color.Red;
+                                label_state.Text = "Send ERROR ";
+                            }
+                            button_send.ForeColor = Color.White;
+                            this.Button_send_enable = true;
+                            return;
                         }
-                        else
-                        {
-                            label_state.ForeColor = Color.Red;
-                            label_state.Text = "Send ERROR ";
-                        }
-                        button_send.ForeColor = Color.White;
-                        this.Button_send_enable = true;
-                        return;
+                        break;
                     }
+                  
 #endif
                     label_state.Text = "Sendding... ";
                     Console.WriteLine("file info >>> " + BitConverter.ToUInt32(data, 0) + BitConverter.ToUInt32(data, 4));
@@ -351,7 +361,7 @@ namespace LoadClient
             client = new TcpClient();
             string ip = textBox_IP.Text;
             string port = textBox_port.Text;
-
+            
             try
             {
                 client.Connect(System.Net.IPAddress.Parse(ip), int.Parse(port));
@@ -370,6 +380,9 @@ namespace LoadClient
                 disconnect.ForeColor = Color.White;
 
                 NetworkStream l_streamToServer = client.GetStream();
+                l_streamToServer.ReadTimeout = 655360;
+
+
                 byte[] buffer = Encoding.ASCII.GetBytes("getinfo:");
 
                 label_state.ForeColor = Color.SpringGreen;
