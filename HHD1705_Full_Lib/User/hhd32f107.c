@@ -36,18 +36,6 @@ void Delay_1ms(uint32_t nCount)
   *******************************************************************************************/
 void System_Setup(void)
 {
-//	SysTick_Config(75000000 /100);  /* SystTick configuration: an interrupt every 10ms */
-//	NVIC_Configuration();  
-
-//	NVIC_SetPriority (SysTick_IRQn, 1);/* Update the SysTick IRQ priority should be higher than the Ethernet IRQ */
-
-	/* ---------- Set Uart1 Baudrate to 115200, no parity check ------------- */
-//	UART_Open(UART1,115200,UART_NO_PARITY,UART_RX_HALF_FULL);
-//	UART_EnableInt(UART1, UART_RX_NOT_EMPTY);
-//	NVIC_EnableIRQ(UART1_IRQn);
-	
-//	Ethernet_Configuration();        /* Configure the Ethernet peripheral */
-
 
 }
 
@@ -99,22 +87,19 @@ void Ethernet_Configuration(EN_NET_PATH path)
 	}
 	
 #ifdef MII_MODE
-
 	(*(unsigned int*)0x40021280) |= 0x10000;	//使用PHY的tx_clk	
-	
-
 	SYSCON->GMACCTRL.bit.MODE = 0;  			//0是MII模式
 #else
 	SYSCON->GMACCTRL.bit.MODE = 4;				//4是RMII MODE
 #endif
-	Delay(100);
+
 	 
 	GPIO_SetPin(GPIOC, PIN9);
-	Delay(100);
+	Delay(50);
 	GPIO_ResetPin(GPIOC, PIN9);
-	Delay(100);
+	Delay(50);
 	GPIO_SetPin(GPIOC, PIN9);
-	Delay(100);
+	Delay(50);
  
 
 	ETH_SoftwareReset();
@@ -177,8 +162,6 @@ void Ethernet_Configuration(EN_NET_PATH path)
 
 }
 #endif
-
-
 
 
 void NVIC_Configuration(void)

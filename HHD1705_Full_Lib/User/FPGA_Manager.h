@@ -14,7 +14,7 @@
 #include "HHD32f1xx.h"
 #include "hhd32f10x_conf.h"
 
-#define MAX_PACKAGE_LEN		1280
+#define MAX_PACKAGE_LEN		2048
 #define SPI_PORT			2590
 
 #define SPI_CMD_CLR		        0x33	//Çå³ý²Ù×÷

@@ -14,6 +14,7 @@
 #include "hhd32f10x_conf.h"
 #include "simulator_spi.h"
 #include "MT25Q.h"
+#include "rtthread.h"
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -156,7 +157,7 @@ uint32_t mt25q_read(uint32_t addr, uint8_t *buff, uint32_t len )
 	{
 		WriteByte(cmd[i]);
 	}
-//	Delay(10);
+
 	for(i = 0; i < len; i++)
 	{
 		buff[i] = readByte();
@@ -191,6 +192,7 @@ int mt25q_erase(uint32_t addr)
 		state = mt25q_read_status(READ_STATUS);   // 确认可以进行操作
 		if(state & 0x01)
 		{
+			rt_thread_delay(100);
 			continue;
 		}
 		else
@@ -216,6 +218,8 @@ int mt25q_erase(uint32_t addr)
 		{
 			break;
 		}
+		
+		rt_thread_delay(100);
 		continue;
 	}
 	
@@ -262,8 +266,6 @@ int mt25q_wirte_page(uint32_t addr, uint8_t *data, uint16_t len)
 	{
 		WriteByte(data[i]);
 	}
-	
-
 	SPI4_CS = 1;
 	
 	mt25q_disable_write();	

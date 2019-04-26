@@ -22,7 +22,7 @@ void SYS_SystemInitial(void)
     SystemInit();
 
     //Configure MainClock and SystemClock(defaul MainClock=40MHz and SystemClock=20MHz)
-    SYSCON->IRCCTRL.all = HHD_CIB->IRCTRIM;
+//    SYSCON->IRCCTRL.all = HHD_CIB->IRCTRIM;
     SYSCON->INTNMI.all = 255;
 
     //Configure WDT clock if need

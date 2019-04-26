@@ -779,14 +779,26 @@ typedef struct
   * @brief Configure information block (CIB)
   */
 
+//typedef struct {                                    /*!< CIB Structure                                                         */
+//  __I  uint32_t  RESERVED0;
+//  __I  uint32_t  FUNCDESC;                          /*!< Device function description                                           */
+//  __I  uint32_t  DID;                               /*!< Device ID                                                             */
+//  __I  uint32_t  VERID;                             /*!< Hardware version                                                      */
+//  __I  uint32_t  UNIQUEID0;                         /*!< Unique device serial no- low 32-bit                                   */
+//  __I  uint32_t  UNIQUEID1;                         /*!< Unique device serial no- high 32-bit                                  */
+//  __I  uint32_t  IRCTRIM;                           /*!< Internal IRC trim bits                                                */
+//} HHD_CIB_Type;
+
 typedef struct {                                    /*!< CIB Structure                                                         */
-  __I  uint32_t  RESERVED0;
-  __I  uint32_t  FUNCDESC;                          /*!< Device function description                                           */
-  __I  uint32_t  DID;                               /*!< Device ID                                                             */
-  __I  uint32_t  VERID;                             /*!< Hardware version                                                      */
-  __I  uint32_t  UNIQUEID0;                         /*!< Unique device serial no- low 32-bit                                   */
-  __I  uint32_t  UNIQUEID1;                         /*!< Unique device serial no- high 32-bit                                  */
-  __I  uint32_t  IRCTRIM;                           /*!< Internal IRC trim bits                                                */
+  __I  uint32_t  DID;
+  __I  uint32_t  RESERVED0;                          /*!< Device function description                                           */
+  __I  uint32_t  UNIQUEID0;
+  __I  uint32_t  RESERVED1;                               /*!< Device ID                                                             */
+  __I  uint32_t  UNIQUEID1;                             /*!< Hardware version                                                      */
+  __I  uint32_t  RESERVED2;                         /*!< Unique device serial no- low 32-bit                                   */
+  __I  uint32_t  UNIQUEID2;                         /*!< Unique device serial no- high 32-bit                                  */
+  __I  uint32_t  RESERVED3;                           /*!< Internal IRC trim bits                                                */
+	__I  uint32_t  WID;
 } HHD_CIB_Type;
 
 typedef struct
@@ -940,7 +952,7 @@ typedef struct
 #define HHD_APB1_BASE         (0x40000000UL)
 #define HHD_APB2_BASE         (0x40010000UL)
 #define HHD_AHB_BASE          (0x40020000UL)
-#define HHD_CIB_BASE          (0x1FFF1400UL)
+#define HHD_CIB_BASE          (0x1FFFEE98UL)
 
 /* APB0 peripherals                                                           */
 #define HHD_TIM2_BASE         (HHD_APB1_BASE + 0x0000)

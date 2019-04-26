@@ -25,50 +25,7 @@ ETH_DMADESCTypeDef  *DMARxDescToGet;
 ETH_DMADESCTypeDef  *DMAPTPTxDescToSet;
 ETH_DMADESCTypeDef  *DMAPTPRxDescToGet;
 
-/* ETHERNET MAC address offsets */
-#define ETH_MAC_BASE          (HHD_ETH_BASE)
-#define ETH_MMC_BASE          (ETH_BASE + 0x0100)
-#define ETH_PTP_BASE          (ETH_BASE + 0x0700)
-#define ETH_DMA_BASE          (ETH_BASE + 0x1000)
 
-#define ETH_MAC_ADDR_HBASE   (ETH_MAC_BASE + 0x40)  /* ETHERNET MAC address high offset */
-#define ETH_MAC_ADDR_LBASE    (ETH_MAC_BASE + 0x44)  /* ETHERNET MAC address low offset */
-
-/* ETHERNET MACMIIAR register Mask */
-#define MACMIIAR_CR_MASK    ((uint32_t)0xFFFFFFE3) 
-
-/* ETHERNET MACCR register Mask */
-#define MACCR_CLEAR_MASK    ((uint32_t)0xFF20810F)  
-
-/* ETHERNET MACFCR register Mask */
-#define MACFCR_CLEAR_MASK   ((uint32_t)0x0000FF41)
-
-/* ETHERNET DMAOMR register Mask */
-#define DMAOMR_CLEAR_MASK   ((uint32_t)0xF8DE3F23)
-
-/* ETHERNET Remote Wake-up frame register length */
-#define ETH_WAKEUP_REGISTER_LENGTH      8
-
-/* ETHERNET Missed frames counter Shift */
-#define  ETH_DMA_RX_OVERFLOW_MISSEDFRAMES_COUNTERSHIFT     17
-
-/* ETHERNET DMA Tx descriptors Collision Count Shift */
-#define  ETH_DMATXDESC_COLLISION_COUNTSHIFT        3
-
-/* ETHERNET DMA Tx descriptors Buffer2 Size Shift */
-#define  ETH_DMATXDESC_BUFFER2_SIZESHIFT           11				/*changed*/
-
-/* ETHERNET DMA Rx descriptors Frame Length Shift */
-#define  ETH_DMARXDESC_FRAME_LENGTHSHIFT           16
-
-/* ETHERNET DMA Rx descriptors Buffer2 Size Shift */
-#define  ETH_DMARXDESC_BUFFER2_SIZESHIFT           11				/*changed*/
-
-/* ETHERNET errors */
-#define  ETH_ERROR              ((uint32_t)0)
-#define  ETH_SUCCESS            ((uint32_t)1)
-
-#define HW32_REG(ADDRESS)  (*((volatile unsigned long  *)(ADDRESS)))
 
 
 void delaynstep(int i)
@@ -90,13 +47,6 @@ void PHY_MII_TO_SGMII(uint16_t PHYAddress)
 	Delay_1ms(1000);
 	
 	
-	//reset
-//	RegValue = ETH_ReadPHYRegister(PHYAddress, 0);
-//	RegValue &= 0xFFFF;
-//	RegValue |= PHY_Reset;
-//	ETH_WritePHYRegister(PHYAddress, 0, RegValue);
-//	Delay(1000);
-	
 	// to page 1	
 	RegValue = ETH_ReadPHYRegister(PHYAddress, 22);
 	RegValue &= 0xFFFF;
@@ -114,15 +64,8 @@ void PHY_MII_TO_SGMII(uint16_t PHYAddress)
 	ETH_WritePHYRegister(PHYAddress, 0,RegValue|0x8000);
 	Delay_1ms(1000);
 	
-//  RegValue = ETH_ReadPHYRegister(PHYAddress, 0);  
-//	RegValue = RegValue&0xEFFF ;     // reg0_bit.12 =0  关闭自适应模式
-//	RegValue = RegValue|0x1000 ;     // reg0_bit.12 =1  自适应模式
-//	RegValue = RegValue|0x0100 ;	 // reg0_bit.8 =1 时是全双工
-//	RegValue = RegValue|0x8000 ;	 // reg0_bit15 =0 时复位，注意复位前要把REG0里面的其它位一块写进去。
-//	ETH_WritePHYRegister(PHYAddress, 0, RegValue);
+
 	Delay(1000);
-
-
 }
 /**********************************************************************
 *	
@@ -132,9 +75,6 @@ void PHY_MII_TO_SGMII(uint16_t PHYAddress)
 void PHY_MII_COPPER(uint16_t PHYAddress)
 {
 	uint32_t RegValue = 0;	
-//	RegValue = ETH_ReadPHYRegister(PHYAddress, 0);
-//	
-//	ETH_WritePHYRegister(PHYAddress, 0,RegValue|0x8000);
 
 	Delay_1ms(1000);	
 	RegValue = ETH_ReadPHYRegister(PHYAddress, 27);

@@ -254,9 +254,9 @@ ARM Macro Assembler    Page 4
   151 00000000                 IMPORT           __main
   152 00000000                 IMPORT           SystemInit
   153 00000000         
-  154 00000000 4806            LDR              R0, =SystemInit
+  154 00000000 4809            LDR              R0, =SystemInit
   155 00000002 4780            BLX              R0
-  156 00000004 4806            LDR              R0, =__main
+  156 00000004 4809            LDR              R0, =__main
   157 00000006 4700            BX               R0
 
 
@@ -532,24 +532,35 @@ ARM Macro Assembler    Page 9
   323 0000001C         ; User Initial Stack & Heap
   324 0000001C         
   325 0000001C                 IF               :DEF:__MICROLIB
-  326 0000001C         
-  327 0000001C                 EXPORT           __initial_sp
-  328 0000001C                 EXPORT           __heap_base
-  329 0000001C                 EXPORT           __heap_limit
-  330 0000001C         
-  331 0000001C                 ELSE
-  345                          ENDIF
-  346 0000001C         
-  347 0000001C         
-  348 0000001C                 END
+  332 0000001C         
+  333 0000001C                 IMPORT           __use_two_region_memory
+  334 0000001C                 EXPORT           __user_initial_stackheap
+  335 0000001C         __user_initial_stackheap
+  336 0000001C         
+  337 0000001C 4804            LDR              R0, =  Heap_Mem
+  338 0000001E 4905            LDR              R1, =(Stack_Mem + Stack_Size)
+  339 00000020 4A05            LDR              R2, = (Heap_Mem +  Heap_Size)
+  340 00000022 4B06            LDR              R3, = Stack_Mem
+  341 00000024 4770            BX               LR
+  342 00000026         
+  343 00000026 00 00           ALIGN
+  344 00000028         
+  345 00000028                 ENDIF
+  346 00000028         
+  347 00000028         
+  348 00000028                 END
               00000000 
+              00000000 
+              00000000 
+              00002000 
+              00001000 
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
 ork --depend=.\objects\startup_hhd32f1xx_s.d -o.\objects\startup_hhd32f1xx_s.o 
--IC:\Keil_v5\ARM\RV31\INC -IC:\Keil_v5\ARM\CMSIS\Include --predefine="__MICROLI
-B SETA 1" --predefine="__UVISION_VERSION SETA 527" --list=.\listings\startup_hh
-d32f1xx_s.lst ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx\Startup\rvd
-s\startup_hhd32F1xx_s.s
+-I.\RTE\_Demo_V2.0 -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.5.1\Device\ARM\ARMCM3\Incl
+ude -IC:\Keil_v5\ARM\CMSIS\Include --predefine="__UVISION_VERSION SETA 527" --p
+redefine="ARMCM3 SETA 1" --list=.\listings\startup_hhd32f1xx_s.lst ..\HHD32F1xx
+_library\Core\CM3\DeviceSupport\HHD32F1xx\Startup\rvds\startup_hhd32F1xx_s.s
 
 
 
@@ -572,8 +583,11 @@ Symbol: Stack_Mem
       At line 30 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx\
 Startup\rvds\startup_hhd32F1xx_s.s
    Uses
-      None
-Comment: Stack_Mem unused
+      At line 338 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx
+\Startup\rvds\startup_hhd32F1xx_s.s
+      At line 340 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx
+\Startup\rvds\startup_hhd32F1xx_s.s
+
 __initial_sp 00002000
 
 Symbol: __initial_sp
@@ -583,9 +597,7 @@ Startup\rvds\startup_hhd32F1xx_s.s
    Uses
       At line 57 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx\
 Startup\rvds\startup_hhd32F1xx_s.s
-      At line 327 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx
-\Startup\rvds\startup_hhd32F1xx_s.s
-
+Comment: __initial_sp used once
 3 symbols
 
 
@@ -609,8 +621,11 @@ Symbol: Heap_Mem
       At line 42 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx\
 Startup\rvds\startup_hhd32F1xx_s.s
    Uses
-      None
-Comment: Heap_Mem unused
+      At line 337 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx
+\Startup\rvds\startup_hhd32F1xx_s.s
+      At line 339 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx
+\Startup\rvds\startup_hhd32F1xx_s.s
+
 __heap_base 00000000
 
 Symbol: __heap_base
@@ -618,9 +633,8 @@ Symbol: __heap_base
       At line 41 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx\
 Startup\rvds\startup_hhd32F1xx_s.s
    Uses
-      At line 328 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx
-\Startup\rvds\startup_hhd32F1xx_s.s
-Comment: __heap_base used once
+      None
+Comment: __heap_base unused
 __heap_limit 00001000
 
 Symbol: __heap_limit
@@ -628,9 +642,8 @@ Symbol: __heap_limit
       At line 43 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx\
 Startup\rvds\startup_hhd32F1xx_s.s
    Uses
-      At line 329 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx
-\Startup\rvds\startup_hhd32F1xx_s.s
-Comment: __heap_limit used once
+      None
+Comment: __heap_limit unused
 4 symbols
 
 
@@ -1566,7 +1579,17 @@ Startup\rvds\startup_hhd32F1xx_s.s
       At line 203 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx
 \Startup\rvds\startup_hhd32F1xx_s.s
 
-68 symbols
+__user_initial_stackheap 0000001C
+
+Symbol: __user_initial_stackheap
+   Definitions
+      At line 335 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx
+\Startup\rvds\startup_hhd32F1xx_s.s
+   Uses
+      At line 334 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx
+\Startup\rvds\startup_hhd32F1xx_s.s
+Comment: __user_initial_stackheap used once
+69 symbols
 
 
 
@@ -1582,7 +1605,9 @@ Startup\rvds\startup_hhd32F1xx_s.s
    Uses
       At line 42 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx\
 Startup\rvds\startup_hhd32F1xx_s.s
-Comment: Heap_Size used once
+      At line 339 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx
+\Startup\rvds\startup_hhd32F1xx_s.s
+
 Stack_Size 00002000
 
 Symbol: Stack_Size
@@ -1592,7 +1617,9 @@ Startup\rvds\startup_hhd32F1xx_s.s
    Uses
       At line 30 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx\
 Startup\rvds\startup_hhd32F1xx_s.s
-Comment: Stack_Size used once
+      At line 338 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx
+\Startup\rvds\startup_hhd32F1xx_s.s
+
 __Vectors_Size 00000148
 
 Symbol: __Vectors_Size
@@ -1630,5 +1657,14 @@ Symbol: __main
       At line 156 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx
 \Startup\rvds\startup_hhd32F1xx_s.s
 Comment: __main used once
-2 symbols
-417 symbols in table
+__use_two_region_memory 00000000
+
+Symbol: __use_two_region_memory
+   Definitions
+      At line 333 in file ..\HHD32F1xx_library\Core\CM3\DeviceSupport\HHD32F1xx
+\Startup\rvds\startup_hhd32F1xx_s.s
+   Uses
+      None
+Comment: __use_two_region_memory unused
+3 symbols
+421 symbols in table

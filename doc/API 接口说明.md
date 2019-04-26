@@ -2,14 +2,14 @@
 
 ## 变更记录
 
-| 变更时间  |             变更内容              | 版本号 | 提交变更者 |
-| :-------: | :-------------------------------: | :----: | :--------: |
-| 2019.3.11 |               初版                | 0.0.1  | Ender.Wigg |
-| 2019.3.15 |   支持多FPGA固化，增加lib配置宏   | 0.1.0  | Ender.Wigg |
-| 2019.3.20 | 将CAN中断函数放置到hhd32f10x_it.c | 0.2.0  | Ender.Wigg |
-| 2019.3.25 |         增加切换网口说明          | 0.3.0  | Ender.Wigg |
-| 2019.4.11 |    增加通过上位机选择FPGA功能     | 0.4.0  | Ender.Wigg |
-|           |                                   |        |            |
+| 变更时间  |              变更内容              | 版本号 | 提交变更者 |
+| :-------: | :--------------------------------: | :----: | :--------: |
+| 2019.3.11 |                初版                | 0.0.1  | Ender.Wigg |
+| 2019.3.15 |   支持多FPGA固化，增加lib配置宏    | 0.1.0  | Ender.Wigg |
+| 2019.3.20 | 将CAN中断函数放置到hhd32f10x_it.c  | 0.2.0  | Ender.Wigg |
+| 2019.3.25 |          增加切换网口说明          | 0.3.0  | Ender.Wigg |
+| 2019.4.11 |     增加通过上位机选择FPGA功能     | 0.4.0  | Ender.Wigg |
+| 2019.4.25 | 增加RTT nano 内核，提供BSD 网络API | 1.0.0  | Ender.Wigg |
 
 ## 基本信息描述
 
@@ -20,9 +20,9 @@
 | **网络连接速度**           |   **100M/10M**    |      |
 | **系统调度定时器中断周期** |     **10ms**      |      |
 | **CAN波特率**              | **1Mbps/500Kbps** |      |
-|                            |                   |      |
-|                            |                   |      |
-|                            |                   |      |
+| **操作系统**               |   **RTT nano**    |      |
+| **网络协议栈**             |   **LWIP1.3.2**   |      |
+| **默认IP**                 | **192.168.2.198** |      |
 |                            |                   |      |
 
 ### 可用外设
@@ -31,8 +31,6 @@
 - MAC
 - CAN
 - SPI
-
-##系统初始化
 
 ### 系统基本功能初始化
 
@@ -341,17 +339,17 @@ void CAN1_IRQHandler(void)
 #include "hhd32f10x_conf.h"
 
 
-#define xCOMPILE_TO_LIB		/* 如果需要将该工程编译成库，必须使能该宏
+#define COMPILE_TO_LIB		/* 如果需要将该工程编译成库，必须使能该宏
 								如果编译为直接烧写，则不需要定义该宏*/
 							
+#define MII_MODE           /* MII mode   */
 
-#define MII_MODE           	/* MII mode  (走调试网口) */
-#define xMII_TO_SGMII	   	/* MII to SGMII 功能 (走交换机)*/ 
 #define xBUG_GMII_TO_SGMII 	/* 是否监视交换机状态，不是必须要启用*/
-#define xETH_100M 		   	/* 确定网口速度，如果定义该宏，网口速度将被配置为100M，否则为10M*/
+#define ETH_100M 		   	/* 确定网口速度，如果定义该宏，网口速度将被配置为100M，否则为10M*/
 #define CFG_SYS_60MHZ 		/* 指定系统主频 60MHz*/
-#define xCFG_SYS_50MHZ		/* 指定系统主频 50MHz*/
+#define xCFG_USING_MARK     /* 获取 Mark 作为 IP，如果 FPGA 没有实现该功能，则会导致 MCU 启动不成功*/
 
+#define CFG_USING_LED_BLINK /* 是否闪烁LED状态灯*/
 #define CFG_USING_CAN1      /* 使用CAN1接口*/
 #define CFG_USING_NET		/* 使用网络*/
 #define CFG_USING_SPI		/* 使用SPI接口*/
@@ -359,34 +357,34 @@ void CAN1_IRQHandler(void)
 #define xCFG_SELECT_SPI_IO_0	/* 使用 PC9，PC10，PC11， PC12*/
 #define CFG_SELECT_SPI_IO_1	    /* 使用 PC7，PC8，PC10， PC11,  该模式支持访问4片FPGA*/
 
+// 网络路径选择
+#define ETH_PATH  EN_TO_MDI /* 使用调试板网口*/
+//#define ETH_PATH  EN_TO_SWITCH /* 使用交换机*/
 // 设备默认IP
 #define IP_0			192
 #define IP_1			168
 #define IP_2			2
-#define IP_3			198
+
 // FPGA 固化功能 默认选择的FPGA
 
 #ifdef CFG_SELECT_SPI_IO_1 
-	#define FPGA0			0
 	#define FPGA1			1
 	#define FPGA2			2
 	#define FPGA3			3
+	#define FPGA4			4
 #else
-#define FPGA0			0
-#define FPGA1			0
-#define FPGA2			0
-#define FPGA3			0
+#define FPGA1			1
+#define FPGA2			1
+#define FPGA3			1
+#define FPGA4			1
 #endif
+
 
 #define DEF_ACCESS_FPGA	FPGA0 
 
 /******************************************依赖条件检查***************************************************/
 
-#ifdef MII_TO_SGMII		  //使用MII to SGMII 必须启用MII
-	#ifndef MII_MODE
-		#define MII_MODE
-	#endif
-#endif
+
 
 #ifdef CFG_USING_NET
 	#ifdef CFG_USING_SPI
@@ -395,9 +393,14 @@ void CAN1_IRQHandler(void)
 	#define CFG_USING_XVC				 // 使用FPGA远程调试网络服务器
 #endif
 
+
 #ifdef CFG_USING_CAN1
 	#define CFG_USING_CAN1_WRITE_BACK	//MCU将通过CAN1回显收到的数据		
 #endif
+
+////////////////////////////////////////////////Global ////////////////////////////////////////////////////////
+
+extern uint8_t Mark;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //												API															 //
@@ -410,6 +413,14 @@ void CAN1_IRQHandler(void)
 *
 ***************************************************************************************************************/
 void base_init(void);
+/**************************************************************************************************************
+*
+* 应用任务初始化
+* 该函数初始化如下功能：
+* 启动 FPGA远程调试功能
+* 启动 FPGA快速固化功能
+***************************************************************************************************************/
+void application_init(void);
 
 /**************************************************************************************************************
 *
@@ -425,7 +436,14 @@ void Delay(uint32_t nCount);
 **************************************************************************************************************/
 
   uint32_t Get_Tick(void);
-
+/**************************************************************************************************************
+*
+*	获取板卡Mark, 并将该值作为 IP的最后一字节
+*
+**************************************************************************************************************/  
+uint8_t get_mark(void);  
+  
+  
 ///////////////////////////////////////////////CAN/////////////////////////////////////////////////////////////
 
 /**************************************************************************************************************
@@ -449,6 +467,8 @@ int CAN_Transmit(HHD32F1_CAN_TypeDef *can, CanTxMsg *TxMessage);
 * 其中 FIFONumber 参数未使用
 ***************************************************************************************************************/
 int CAN_Receive(HHD32F1_CAN_TypeDef *can, uint8_t FIFONumber, CanRxMsg* RxMessage);
+
+
 
 /////////////////////////////////////////////////SPI////////////////////////////////////////////////////////////
 
@@ -474,8 +494,17 @@ int SPI_To_FPGA_Wirte(uint8_t fpga, uint8_t addr, uint8_t *data, int len);
 ***************************************************************************************************************/
 int SPI_To_FPGA_Read(uint8_t fpga, uint8_t addr, uint8_t *data, int len);
 
+
 #endif
 ```
+
+### <font color=red>特别说明</font>
+
+```c
+#define xCFG_USING_MARK
+```
+
+**如果使能该宏，MCU 启动时会等待FPAG启动完成后从FPGA获取 Mark ，将其作为 网络 IP 的最后一字节，如果 FPGA 不支持该功能，则会导致 MCU 一直处于等待 FPGA 启动完成状态，及启动不成功，慎重使用。**
 
 ## 编译
 
@@ -512,9 +541,9 @@ int SPI_To_FPGA_Read(uint8_t fpga, uint8_t addr, uint8_t *data, int len);
 
 在函数 `void peripheral_init(void)`中
 
-![1553479500444](..\img\tuto.png)
+![1553479500444](..\img\oooo.png)
 
-函数
+**函数**
 
 ```c
 Ethernet_Configuration(EN_TO_SWITCH);
@@ -524,3 +553,39 @@ Ethernet_Configuration(EN_TO_SWITCH);
 
 当参数为 **EN_TO_SWITCH** 时 使用背板交换机
 
+## RTT nano 内核
+
+在HHD1705_Full_Lib_V2.0 中引入 RTT nano 内核，提供操作系统的基本功能，包括多任务，信号量，内存管理，任务调度管理等实用功能，用户可以使用内核提的相关机制，实现多任务。内核API使用请参考 [《RT-Thread 编程指南.pdf》](.\RT-Thread 编程指南.pdf)
+
+Demo 工程中使用 RTT nano 的多任务机制实现了 LED 闪烁功能，简单演示了如何创建任务。HHD1705_Full_Lib_V2.0 中，main函数已经变成了一个初始化任务，改任务在完成初始化后是可以返回的。
+
+## BSD 网络 API
+
+HHD1705_Full_Lib_V2.0 中网络不但能够使用LWIP 原始 API 接口创建以太网连接，还能使用标准的 BSD 风格的 API 接口创建以太网连接。提供如下API：
+
+```c
+int socket(int domain, int type, int protocol);
+int bind(int s, const struct sockaddr *name, socklen_t namelen);
+int listen(int s, int backlog);
+int accept(int s, struct sockaddr *addr, socklen_t *addrlen);
+int connect(int s, const struct sockaddr *name, socklen_t namelen);
+int send(int s, const void *dataptr, size_t size, int flags);
+int recv(int s, void *mem, size_t len, int flags);
+int sendto(int s, const void *dataptr, size_t size, int flags, const struct sockaddr
+*to, socklen_t tolen);
+int recvfrom(int s, void *mem, size_t len, int flags, struct sockaddr *from,
+socklen_t *fromlen);
+int closesocket(int s);
+int setsockopt(int s, int level, int optname, const void *optval, socklen_t optlen);
+```
+
+各个 API 的详细使用 请阅读[《RT-Thread 编程指南.pdf》](.\RT-Thread 编程指南.pdf)的 **25.3 BSD Socket API 介绍** 。
+
+在 `User\load_server_BSD.c`中创建了一个用于实现 FPAG 配置文件固化的 TCP 服务器，用户可参考该文件来创建自己的网络应用。 
+
+## HHD1705_Full_Lib_V2.0 工程变化说明
+
+1. HHD1705_Full_Lib_V2.0 中，不再单独创建 Demo 工程，Demo 工程 和 Lib 在同一目录下，通过不同的工程入口文件打开不同的工程；
+2. 同时由于使用 RTT nano 内核，工程不再支持 Keil4，需要使用Keil5来打开和编译工程；
+3. 对于不必用户修该Lib工程的源文件进行了只读设置，防止用户误操作导致库代码被修改；
+4. Lib 文件放置于 `HHD1705_Full_Lib\Project\Objects`路径，及用户在重新编译库生成 Lib 文件后，不需要再次复制到 Demo工程。

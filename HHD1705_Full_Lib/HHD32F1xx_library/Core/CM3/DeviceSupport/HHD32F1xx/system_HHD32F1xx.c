@@ -193,7 +193,7 @@
       #define __MAIN_CLOCK             (0)
     #endif
 
-    #define __SYSTEM_CLOCK             (__MAIN_CLOCK / SYSAHBCLKDIV_Val)
+    #define __SYSTEM_CLOCK             (__MAIN_CLOCK / 1)
 
   #else // SYSCLK_SETUP
     #if (SYSAHBCLKDIV_Val == 0)

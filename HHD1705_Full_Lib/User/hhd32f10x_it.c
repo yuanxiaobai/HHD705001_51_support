@@ -16,6 +16,8 @@
 #include "hhd32f1xx.h"
 #include "HHD1705_lib.h"
 
+
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -44,16 +46,7 @@ void NMI_Handler(void)
 
 	* @retval None
   */
-void HardFault_Handler(void)
-{
-  /* Go to infinite loop when Hard Fault exception occurs */
-	//int i;
 
-  while (1)
-  {
-//		i--;
-	}
-}
 
 /**
   * @brief  This function handles Memory Manage exception.
@@ -106,45 +99,44 @@ void SVC_Handler(void)
   */
 void DebugMon_Handler(void)
 {}
-
-/**
-  * @brief  This function handles PendSVC exception.
-  * @param  None
-  * @retval None
-  */
-void PendSV_Handler(void)
-{}
-
-/**
-  * @brief  This function handles SysTick Handler.
-  * @param  None
-  * @retval None
-  */
-void SysTick_Handler(void)
-{
-  /* Update the LocalTime by adding SYSTEMTICK_PERIOD_MS each SysTick interrupt */
-  Time_Update();
-}
-
-
-
-/**
-  * @brief  This function handles ETH interrupt request.
-  * @param  None
-  * @retval None
-  */
+#include <netif/etharp.h>
+#include "rtthread.h"
+	#include "eth.h"
+extern struct rt_stm32_eth stm32_eth_device;
+/* interrupt service routine */
 void ETH_IRQHandler(void)
 {
-  /* Handles all the received frames */
-  while(ETH_GetRxPktSize() != 0) 
-  {		
-    LwIP_Pkt_Handle();
-  }
+    rt_uint32_t status, ier;
 
-  /* Clear the Eth DMA Rx IT pending bits */
-  ETH_DMAClearITPendingBit(ETH_DMA_IT_R);
-  ETH_DMAClearITPendingBit(ETH_DMA_IT_NIS);
+    /* enter interrupt */
+    rt_interrupt_enter();
+
+    status = HHD_ETH->DMASR;
+    ier = HHD_ETH->DMAIER;
+
+    if(status & ETH_DMA_IT_NIS)
+    {
+        rt_uint32_t nis_clear = ETH_DMA_IT_NIS;
+
+        /* [6]:Receive Interrupt. */
+        if((status & ier) & ETH_DMA_IT_R) /* packet reception */
+        {
+            //STM32_ETH_PRINTF("ETH_DMA_IT_R\r\n");
+            /* a frame has been received */
+            eth_device_ready(&(stm32_eth_device.parent));
+
+            nis_clear |= ETH_DMA_IT_R;
+        }
+
+        /* [14]:Early Receive Interrupt. */
+
+        ETH_DMAClearITPendingBit(nis_clear);
+    }
+
+       /* leave interrupt */
+    rt_interrupt_leave();
 }
+
 
 
 /**----------------------------------------------------------------------------
@@ -163,7 +155,6 @@ void ETH_IRQHandler(void)
 
 void CAN1_IRQHandler(void)
 {
-
 	if(CAN1->IR.bit.RI == 0x01) //Ω” ’÷–∂œ
 	{
 		

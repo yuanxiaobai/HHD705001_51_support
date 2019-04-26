@@ -10,7 +10,6 @@
 #include <string.h>
 #include "spi.h"
 #include "HHD32f1xx.h"
-
 #include "HHD1705_lib.h"
 #include "simulator_spi.h"
 

@@ -40,6 +40,54 @@
   * @{
   */
 
+
+/* ETHERNET MAC address offsets */
+#define ETH_MAC_BASE          (HHD_ETH_BASE)
+#define ETH_MMC_BASE          (ETH_BASE + 0x0100)
+#define ETH_PTP_BASE          (ETH_BASE + 0x0700)
+#define ETH_DMA_BASE          (ETH_BASE + 0x1000)
+
+#define ETH_MAC_ADDR_HBASE   (ETH_MAC_BASE + 0x40)  /* ETHERNET MAC address high offset */
+#define ETH_MAC_ADDR_LBASE    (ETH_MAC_BASE + 0x44)  /* ETHERNET MAC address low offset */
+
+/* ETHERNET MACMIIAR register Mask */
+#define MACMIIAR_CR_MASK    ((uint32_t)0xFFFFFFE3) 
+
+/* ETHERNET MACCR register Mask */
+#define MACCR_CLEAR_MASK    ((uint32_t)0xFF20810F)  
+
+/* ETHERNET MACFCR register Mask */
+#define MACFCR_CLEAR_MASK   ((uint32_t)0x0000FF41)
+
+/* ETHERNET DMAOMR register Mask */
+#define DMAOMR_CLEAR_MASK   ((uint32_t)0xF8DE3F23)
+
+/* ETHERNET Remote Wake-up frame register length */
+#define ETH_WAKEUP_REGISTER_LENGTH      8
+
+/* ETHERNET Missed frames counter Shift */
+#define  ETH_DMA_RX_OVERFLOW_MISSEDFRAMES_COUNTERSHIFT     17
+
+/* ETHERNET DMA Tx descriptors Collision Count Shift */
+#define  ETH_DMATXDESC_COLLISION_COUNTSHIFT        3
+
+/* ETHERNET DMA Tx descriptors Buffer2 Size Shift */
+#define  ETH_DMATXDESC_BUFFER2_SIZESHIFT           11				/*changed*/
+
+/* ETHERNET DMA Rx descriptors Frame Length Shift */
+#define  ETH_DMARXDESC_FRAME_LENGTHSHIFT           16
+
+/* ETHERNET DMA Rx descriptors Buffer2 Size Shift */
+#define  ETH_DMARXDESC_BUFFER2_SIZESHIFT           11				/*changed*/
+
+/* ETHERNET errors */
+#define  ETH_ERROR              ((uint32_t)0)
+#define  ETH_SUCCESS            ((uint32_t)1)
+
+#define HW32_REG(ADDRESS)  (*((volatile unsigned long  *)(ADDRESS)))
+
+
+
 /** 
   * @brief  ETH MAC Init structure definition
   * @note   The user should not configure all the ETH_InitTypeDef structure's fields. 
@@ -1763,6 +1811,20 @@ uint16_t get_phyaddr(void);
 //uint32_t ETH_GetRxDescStat();
 
 //
+typedef struct{
+u32 length;
+u32 buffer;
+ETH_DMADESCTypeDef *descriptor;
+}FrameTypeDef;
+
+FrameTypeDef ETH_RxPkt_ChainMode(void);
+u32 ETH_GetCurrentTxBuffer(void);
+u32 ETH_TxPkt_ChainMode(u16 FrameLength);
+
+
+
+
+
 #ifdef __cplusplus
 }
 #endif
