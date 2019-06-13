@@ -186,8 +186,8 @@ void can_init(HHD32F1_CAN_TypeDef *can, EN_BAUD baud, uint32_t filterID, uint32_
 	{
 	
 		can->BTR0.bit.BRP = 1;   
-		can->BTR1.bit.TSEG1 = 7;
-		can->BTR1.bit.TSEG2 = 5;	
+		can->BTR1.bit.TSEG1 = 9;
+		can->BTR1.bit.TSEG2 = 3;	
 	}
 	else if(baud == CAN_BAUD_500K)
 	{

@@ -15,7 +15,7 @@
 #include "hhd32f10x_conf.h"
 
 
-#define xCOMPILE_TO_LIB		/* 如果需要将该工程编译成库，必须使能该宏
+#define COMPILE_TO_LIB		/* 如果需要将该工程编译成库，必须使能该宏
 								如果编译为直接烧写，则不需要定义该宏*/
 							
 #define MII_MODE           /* MII mode   */

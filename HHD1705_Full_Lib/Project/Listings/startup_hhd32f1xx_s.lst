@@ -557,8 +557,8 @@ ARM Macro Assembler    Page 9
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
 ork --depend=.\objects\startup_hhd32f1xx_s.d -o.\objects\startup_hhd32f1xx_s.o 
--I.\RTE\_Demo_V2.0 -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.5.1\Device\ARM\ARMCM3\Incl
-ude -IC:\Keil_v5\ARM\CMSIS\Include --predefine="__UVISION_VERSION SETA 527" --p
+-I.\RTE\_Demo_V2.0 -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.2.0\Device\ARM\ARMCM3\Incl
+ude -IC:\Keil_v5\ARM\CMSIS\Include --predefine="__UVISION_VERSION SETA 525" --p
 redefine="ARMCM3 SETA 1" --list=.\listings\startup_hhd32f1xx_s.lst ..\HHD32F1xx
 _library\Core\CM3\DeviceSupport\HHD32F1xx\Startup\rvds\startup_hhd32F1xx_s.s
 

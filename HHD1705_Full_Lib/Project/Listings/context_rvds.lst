@@ -303,8 +303,8 @@ ARM Macro Assembler    Page 5
               E000ED08 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
 ork --depend=.\objects\context_rvds.d -o.\objects\context_rvds.o -I.\RTE\_Demo_
-V2.0 -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.5.1\Device\ARM\ARMCM3\Include -IC:\Keil_
-v5\ARM\CMSIS\Include --predefine="__UVISION_VERSION SETA 527" --predefine="ARMC
+V2.0 -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.2.0\Device\ARM\ARMCM3\Include -IC:\Keil_
+v5\ARM\CMSIS\Include --predefine="__UVISION_VERSION SETA 525" --predefine="ARMC
 M3 SETA 1" --list=.\listings\context_rvds.lst ..\RTT\libcpu\arm\cortex-m3\conte
 xt_rvds.S
 
