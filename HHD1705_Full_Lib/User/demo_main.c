@@ -16,6 +16,8 @@
 #include "lib_xvc_v1_0.h"
 #include "HHD1705_lib.h"
 #include "rtthread.h"       // RTOS 相关函数和机制
+#include "can_task.h"
+
 
 
 /*****************************************************************************************************
@@ -93,27 +95,48 @@ void task_led(void *arg)
 
 int main(void)
 {
+	uint32_t fpga_bootMark = 0;
+	uint32_t count = 0;
 	rt_thread_t task_led_id = NULL; // 任务描述符 
 // 引脚初始化	
 	IO_init(pins_table, sizeof(pins_table)/sizeof(ST_PINS));
-// 初始化 CAN 接口
-#ifdef CFG_USING_CAN1	
-	can_init(CAN1, CAN_BAUD_1M, 0x6789, 0);
+// spi硬件接口初始化
+	spi_Init();
+#ifdef CFG_USING_MARK	
+// 确认FPGA已经正常启动	
+	while(count < 100)                                  
+	{
+		SPI_To_FPGA_Read(CHECK_FPGA_NUM, CHECK_FPGA_ADDR, (uint8_t *)&fpga_bootMark, 4);
+		if(fpga_bootMark == FPGA_BOOT_OK)
+		{
+			break;
+		}
+		rt_thread_delay(50);
+		count++;
+	}
+
 #endif
+#ifdef 	CFG_USING_NET
+// 网络接口初始化
+extern 	int rt_hw_hhd_eth_init(void);
+	rt_hw_hhd_eth_init();
+	Ethernet_Configuration(ETH_PATH);        
+#endif				
 // 启动网络协议栈	
 extern void lwip_system_init(void);	
 	lwip_system_init();
 // 启动网络应用	
 	application_init();
-	
+// 启动CAN 任务
+	can_task_init();			
 // 创建 LED 任务	
 	task_led_id = rt_thread_create("LED", task_led, RT_NULL, 256, 20, 20);
 // 启动 LED 任务	
 	if(task_led_id != NULL)
 	{
 		rt_thread_startup(task_led_id);
-	}
-	
+	}				
+		
 }
 
 

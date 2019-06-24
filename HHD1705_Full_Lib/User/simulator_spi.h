@@ -22,22 +22,22 @@
 	#define SPI4_MOSI			SPI4_MOSI_PORT->OUT.bit.IO12
 	#define SPI4_MISO			(GPIOC->PIN.bit.IO11)
 #else	
-	#define SPI4_CS_PIN			PIN7
-	#define SPI4_CS_PORT		GPIOC
+	#define SPI4_CS_PIN			PIN4 
+	#define SPI4_CS_PORT		GPIOD 
 
-	#define SPI4_SCK_PIN		PIN8
-	#define SPI4_SCK_PORT		GPIOC
+	#define SPI4_SCK_PIN		PIN5 
+	#define SPI4_SCK_PORT		GPIOD
 
-	#define SPI4_MISO_PIN		PIN11
-	#define SPI4_MISO_PORT		GPIOC
+	#define SPI4_MISO_PIN		PIN7
+	#define SPI4_MISO_PORT		GPIOD
 
-	#define SPI4_MOSI_PIN		PIN10
-	#define SPI4_MOSI_PORT		GPIOC
+	#define SPI4_MOSI_PIN		PIN6  
+	#define SPI4_MOSI_PORT		GPIOD
 
-	#define SPI4_CS				SPI4_CS_PORT->OUT.bit.IO7 
-	#define SPI4_CLK		    SPI4_SCK_PORT->OUT.bit.IO8	
-	#define SPI4_MOSI			SPI4_MOSI_PORT->OUT.bit.IO10
-	#define SPI4_MISO			(GPIOC->PIN.bit.IO11)
+	#define SPI4_CS				SPI4_CS_PORT->OUT.bit.IO4
+	#define SPI4_CLK		    SPI4_SCK_PORT->OUT.bit.IO5	
+	#define SPI4_MOSI			SPI4_MOSI_PORT->OUT.bit.IO6
+	#define SPI4_MISO			(GPIOD->PIN.bit.IO7)//(GPIOC->PIN.bit.IO7)
 
 #endif
 

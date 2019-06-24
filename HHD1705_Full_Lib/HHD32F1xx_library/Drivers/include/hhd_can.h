@@ -917,7 +917,8 @@ typedef struct
 
 typedef enum en_Baud{
 	CAN_BAUD_500K = 0,
-	CAN_BAUD_1M = 1
+	CAN_BAUD_1M ,
+	
 } EN_BAUD;
 
 #define CAN1       ((HHD32F1_CAN_TypeDef     *) HHD_CAN1_BASE)

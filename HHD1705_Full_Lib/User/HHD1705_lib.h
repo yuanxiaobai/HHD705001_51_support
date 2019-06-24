@@ -18,12 +18,13 @@
 #define COMPILE_TO_LIB		/* 如果需要将该工程编译成库，必须使能该宏
 								如果编译为直接烧写，则不需要定义该宏*/
 							
-#define MII_MODE           /* MII mode   */
+#define MII_MODE            /* MII mode   */
 
-#define xBUG_GMII_TO_SGMII 	/* 是否监视交换机状态，不是必须要启用*/
+#define BUG_GMII_TO_SGMII 	/* 是否监视交换机状态，不是必须要启用*/
 #define ETH_100M 		   	/* 确定网口速度，如果定义该宏，网口速度将被配置为100M，否则为10M*/
 #define CFG_SYS_60MHZ 		/* 指定系统主频 60MHz*/
-#define xCFG_USING_MARK
+#define xCFG_SYS_80MHZ		/* 指定系统主频 80MHz*/
+#define CFG_USING_MARK 	    /* 指定从FPGA获取Mark*/
 
 #define CFG_USING_LED_BLINK /* 是否闪烁LED状态灯*/
 #define CFG_USING_CAN1      /* 使用CAN1接口*/
@@ -34,25 +35,32 @@
 #define CFG_SELECT_SPI_IO_1	    /* 使用 PC7，PC8，PC10， PC11,  该模式支持访问4片FPGA*/
 
 // 网络路径选择
-#define ETH_PATH  EN_TO_MDI /* 使用调试板网口*/
-//#define ETH_PATH  EN_TO_SWITCH /* 使用交换机*/
+//#define ETH_PATH  EN_TO_MDI  /* 使用调试板网口*/
+#define ETH_PATH  EN_TO_SWITCH /* 使用交换机*/
+
 // 设备默认IP
 #define IP_0			192
 #define IP_1			168
 #define IP_2			2
 
+// FPGA 启动相关参数, MCU 启动后会检查FPGA启动是否完成，设有5s的超时
+#define CHECK_FPGA_NUM	 0		/* 管控FPGA 编号*/
+#define CHECK_FPGA_ADDR	 251   	/* FPGA存放 启动完成标记地址*/
+#define MARK_FPGA_ADDR	 0		/* FPGA存放 槽位号地址*/
+#define FPGA_BOOT_OK	 0x5A5A0006
+
 // FPGA 固化功能 默认选择的FPGA
 
 #ifdef CFG_SELECT_SPI_IO_1 
-	#define FPGA1			1
-	#define FPGA2			2
-	#define FPGA3			3
-	#define FPGA4			4
+	#define FPGA1			0
+	#define FPGA2			1
+	#define FPGA3			2
+	#define FPGA4			3
 #else
-#define FPGA1			1
-#define FPGA2			1
-#define FPGA3			1
-#define FPGA4			1
+	#define FPGA1			0
+	#define FPGA2			0
+	#define FPGA3			0
+	#define FPGA4			0
 #endif
 
 
@@ -71,7 +79,7 @@
 
 
 #ifdef CFG_USING_CAN1
-	#define CFG_USING_CAN1_WRITE_BACK	//MCU将通过CAN1回显收到的数据		
+	#define xCFG_USING_CAN1_WRITE_BACK	//MCU将通过CAN1回显收到的数据		
 #endif
 
 ////////////////////////////////////////////////Global ////////////////////////////////////////////////////////
@@ -119,16 +127,17 @@ void Delay(uint32_t nCount);
 **************************************************************************************************************/  
 uint8_t get_mark(void);  
   
-  
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 ///////////////////////////////////////////////CAN/////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**************************************************************************************************************
 *
 *CAN 接口初始化
 *
 ***************************************************************************************************************/
-void can_init(HHD32F1_CAN_TypeDef *can, EN_BAUD baud, uint32_t filterID, uint32_t mask);
 
+void can_init(HHD32F1_CAN_TypeDef *can, EN_BAUD baud, uint32_t canIDType, uint32_t filterID, uint32_t mask);
 /**************************************************************************************************************
 *
 * 通过can 接口发送一帧数据
@@ -144,9 +153,9 @@ int CAN_Transmit(HHD32F1_CAN_TypeDef *can, CanTxMsg *TxMessage);
 ***************************************************************************************************************/
 int CAN_Receive(HHD32F1_CAN_TypeDef *can, uint8_t FIFONumber, CanRxMsg* RxMessage);
 
-
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////SPI////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**************************************************************************************************************
 *

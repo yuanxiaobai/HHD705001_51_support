@@ -1716,6 +1716,29 @@ rt_err_t rt_mb_control(rt_mailbox_t mb, int cmd, void *arg)
 
         return RT_EOK;
     }
+	if (cmd == RT_IPC_CMD_FULL)         // check mail full
+    {
+        int ret = 0;
+		/* disable interrupt */
+        level = rt_hw_interrupt_disable();
+
+		if(mb->entry == mb->size)
+		{
+			ret = -RT_ERROR;
+		}
+		else
+		{
+			ret = RT_EOK;
+		}
+
+        /* enable interrupt */
+        rt_hw_interrupt_enable(level);
+
+        rt_schedule();
+
+        return ret;
+    }
+	
 
     return -RT_ERROR;
 }

@@ -70,22 +70,29 @@ void peripheral_init(void)
 	
 	NVIC_SetPriority (SysTick_IRQn, 1);    /* Update the SysTick IRQ priority should be higher than the Ethernet IRQ */
 	NVIC_EnableIRQ(ETH_IRQn);
-	
+#ifndef COMPILE_TO_LIB	
 	spi_Init();
-#ifdef CFG_USING_MARK	
+#ifdef CFG_USING_MARK
+	
+	uint32_t data = 0;
+	uint32_t count = 0;
 	while(1)                                   // 确认FPGA已经正常启动
 	{
-		uint8_t data = 0;
-		SPI_To_FPGA_Read(1, 63, &data, 1);
-		if(data == 0xAA)
+		SPI_To_FPGA_Read(CHECK_FPGA_NUM, CHECK_FPGA_ADDR, (uint8_t *)&data, 4);
+		if(data == FPGA_BOOT_OK)
 		{
 			break;
 		}
+		rt_thread_delay(50);
+		count++;
+		
 	}
 #endif
 #ifdef 	CFG_USING_NET
 	Ethernet_Configuration(ETH_PATH);        
-#endif	
+#endif
+#endif
+
 }
 /*******************************************************************************************************
 *
@@ -102,6 +109,12 @@ void application_init(void)
 	jtag_Server_init();
 #endif
 }
+
+/*******************************************************************************************************
+*
+*	LED 任务
+*
+*******************************************************************************************************/
 #ifndef COMPILE_TO_LIB
 void task_led(void *arg)
 {
@@ -132,7 +145,8 @@ void task_led(void *arg)
 int main(void)
 {
 	rt_thread_t task1 = NULL;
-	
+extern int rt_hw_hhd_eth_init(void);
+	rt_hw_hhd_eth_init();
 extern void lwip_system_init(void);	
 	lwip_system_init();
 	application_init();
@@ -171,11 +185,11 @@ uint8_t get_mark(void)
 {
 	uint8_t data = 0;
 
-	 SPI_To_FPGA_Read(1, 0, &data, 1);
+	 SPI_To_FPGA_Read(CHECK_FPGA_NUM, MARK_FPGA_ADDR, &data, 1);
 	
 	if((data == 0) || (data == 0xFF))
 	{
-		data = 198;
+		data = 223;
 	}
 	
 	return data;

@@ -12,7 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <Deterministic>false</Deterministic>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>D:\work\HHD1705\develop_for_51\LoadClient\LoadClient\bin\</PublishUrl>
+    <PublishUrl>D:\work\HHD1705\develop_for_51\project\git\HHD705001_51_support\LoadClient\bin\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -24,7 +24,7 @@
     <MapFileExtensions>true</MapFileExtensions>
     <TargetCulture>zh-CN</TargetCulture>
     <PublisherName>成都海威华芯</PublisherName>
-    <ApplicationRevision>13</ApplicationRevision>
+    <ApplicationRevision>14</ApplicationRevision>
     <ApplicationVersion>1.2.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>

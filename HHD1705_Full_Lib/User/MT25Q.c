@@ -70,33 +70,38 @@ void mt25q_disable_write(void)
 *
 *
 *********************************************************************************************/
+uint32_t mt25q_id = 0;
 void mt25q_init(void)
 {
-	uint32_t id = 0;
-	while(1)   // 等待访问Flash OK
-	{
-		id = mt25q_read_id();
-		if(id == MT25Q_ID)
-		{
-			break;
-		}
-	}
+//	uint32_t mt25q_id = 0;
 	
 	mt25q_enable_write();
 	
 	SPI4_CS = 0;
 	WriteByte(ERSET_ENABLE);
 	SPI4_CS = 1;
+	
 	SPI4_CS = 0;
 	WriteByte(RESET_MEMORY);
-	
 	SPI4_CS = 1;
+	
 	SPI4_CS = 0;
 	WriteByte(ENABLE_4BYTE_MODE);
 	SPI4_CS = 1;
 	
 	mt25q_disable_write();
 	
+	rt_thread_delay(50);
+	while(1)   // 等待访问Flash OK
+	{
+		mt25q_id = mt25q_read_id();
+		if(mt25q_id == MT25Q_ID)
+		{
+			break;
+		}
+		
+		rt_thread_delay(50);	
+	}
 }
 
 /*************************************************************************************************
@@ -192,7 +197,7 @@ int mt25q_erase(uint32_t addr)
 		state = mt25q_read_status(READ_STATUS);   // 确认可以进行操作
 		if(state & 0x01)
 		{
-			rt_thread_delay(100);
+			rt_thread_delay(5);
 			continue;
 		}
 		else
@@ -219,7 +224,7 @@ int mt25q_erase(uint32_t addr)
 			break;
 		}
 		
-		rt_thread_delay(100);
+		rt_thread_delay(5);
 		continue;
 	}
 	

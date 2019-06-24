@@ -6,7 +6,7 @@
  * 2009-10-05     Bernard      eth interface driver for STM32F107 CL
  */
 #include <rtthread.h>
-
+#include <stdlib.h>
 #include <netif/etharp.h>
 #include <lwip/icmp.h>
 #include "lwipopts.h"
@@ -472,20 +472,26 @@ struct pbuf *rt_stm32_eth_rx(rt_device_t dev)
 
 
 
-int rt_hw_stm32_eth_init(void)
+int rt_hw_hhd_eth_init(void)
 {
 
+	uint32_t rand_mac = 0;
     stm32_eth_device.ETH_Speed = ETH_Speed_100M;
     stm32_eth_device.ETH_Mode  = ETH_Mode_FullDuplex;
-
+	
     /* OUI 00-80-E1 STMICROELECTRONICS. */
     stm32_eth_device.dev_addr[0] = 0x00;
     stm32_eth_device.dev_addr[1] = 0x80;
     stm32_eth_device.dev_addr[2] = 0xE1;
+	
+	srand(get_mark());
+	rand_mac = rand();
+	
+	
     /* generate MAC addr from 96bit unique ID (only for test). */
-    stm32_eth_device.dev_addr[3] = HHD_CIB->UNIQUEID0 & 0xFF;
-    stm32_eth_device.dev_addr[4] = HHD_CIB->UNIQUEID1 & 0xFF;
-    stm32_eth_device.dev_addr[5] = HHD_CIB->UNIQUEID2 & 0xFF;
+    stm32_eth_device.dev_addr[3] = rand_mac & 0xFF;
+    stm32_eth_device.dev_addr[4] = (rand_mac >> 8) & 0xFF;
+    stm32_eth_device.dev_addr[5] = ((rand_mac ^= 8)>> 5) & 0xFF;
 
     stm32_eth_device.parent.parent.init       = rt_stm32_eth_init;
     stm32_eth_device.parent.parent.open       = rt_stm32_eth_open;
@@ -509,7 +515,7 @@ int rt_hw_stm32_eth_init(void)
 
 	return 0;	
 }
-INIT_PREV_EXPORT(rt_hw_stm32_eth_init);
+//INIT_PREV_EXPORT(rt_hw_stm32_eth_init);
 
 
 

@@ -425,6 +425,11 @@
               <FileType>5</FileType>
               <FilePath>..\User\HHD1705_lib.h</FilePath>
             </File>
+            <File>
+              <FileName>can_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\can_task.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

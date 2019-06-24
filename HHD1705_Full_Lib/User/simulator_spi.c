@@ -21,7 +21,7 @@
 ********************************************************************************/
 void spi_Init(void)
 {	
-	ENABLEGPIOCCLK;
+	ENABLEGPIODCLK;
 
 	GPIO_ConfigPinsAsOutput(SPI4_CS_PORT, SPI4_CS_PIN);
 	GPIO_ConfigPinsAsOutput(SPI4_SCK_PORT, SPI4_SCK_PIN);	

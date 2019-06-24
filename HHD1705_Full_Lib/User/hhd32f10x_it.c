@@ -15,6 +15,7 @@
 
 #include "hhd32f1xx.h"
 #include "HHD1705_lib.h"
+#include "can_task.h"
 
 
 
@@ -26,6 +27,7 @@
 extern void LwIP_Pkt_Handle(void);
 //extern void tcp_led_control(Led_TypeDef Led);
 extern void Time_Update(void);
+extern struct rt_mailbox mb;
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -155,6 +157,8 @@ void ETH_IRQHandler(void)
 
 void CAN1_IRQHandler(void)
 {
+//	CanRxMsg RxMessage;
+//	rt_uint32_t info;
 	if(CAN1->IR.bit.RI == 0x01) //接收中断
 	{
 		
@@ -174,6 +178,15 @@ void CAN1_IRQHandler(void)
 // 在此处添加CAN 数据接收处理	
 	
 //	CAN_Receive(CAN1, 0, &RxMessage);
+//	info=RxMessage.Data[1]<<8|RxMessage.Data[0];
+//	info=(rt_uint32_t)&RxMessage;
+//	rt_mb_send(&mb, info);
+	
+	
+	can_entry(NULL);
+	
+	
+	
 	
 /////////////////////////////////////////////////////////////////////////////////////////	
 	CAN_SetCMD(CAN1, ReleaseRecBuf); // release recieve buffer

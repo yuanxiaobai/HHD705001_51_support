@@ -87,6 +87,9 @@
 #ifdef CFG_SYS_60MHZ
 	#define SYSPLLCTRL_Val        0x0000414C      //60Mhz
 #endif
+#ifdef CFG_SYS_80MHZ
+	#define SYSPLLCTRL_Val        0x00004150      //80Mhz
+#endif
 #ifdef CFG_SYS_50MHZ
 	#define SYSPLLCTRL_Val        0x0000414A    //50Mhz
 #endif
@@ -171,6 +174,9 @@
     #if (SYSPLL_SETUP)                    /* System PLL Setup         */
 #ifdef CFG_SYS_60MHZ	
       #define  __SYS_PLLCLKOUT        60000000
+#endif
+#ifdef CFG_SYS_80MHZ	
+      #define  __SYS_PLLCLKOUT        80000000
 #endif
 #ifdef CFG_SYS_50MHZ
 	#define  __SYS_PLLCLKOUT          50000000

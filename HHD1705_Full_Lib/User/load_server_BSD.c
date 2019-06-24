@@ -149,7 +149,7 @@ int frame_consultation(int fd, uint8_t *data)
 		
 		file_count = 0;
 		*(uint32_t*)data = 0;
-		*(uint32_t*)(data+4) = 0x88;
+		*(uint32_t*)(data+4) = STATE_ERASE_START;     //上报上位机开始flash擦除
 		 rt_sem_release(erase_sem);	
 		
 		return 8; 
@@ -185,7 +185,7 @@ int frame_handler(int fd, uint8_t *data)
 		return 0;
 	}
 	
-	if(*(uint32_t *)data == 0x21212121)    //"!!!!"
+	if(*(uint32_t *)data == CMD_CANCEL)    //"!!!!"
 	{
 											//提示接收端，放弃已接收的数据
 		file_count = 0;
@@ -222,27 +222,29 @@ int frame_handler(int fd, uint8_t *data)
 				break;
 			}
 		}
-		*(uint16_t*)data = count;
-		*(uint32_t*)(data+2) = len;
 		
 		mt25q_wirte(startaddr+file_count, data, len);
 		mt25q_read(startaddr+file_count, test_read, len);
-		if(fast_compare(data+6, test_read, len) != 0)
+		
+		*(uint16_t*)data     = count;
+		*(uint32_t*)(data+2) = len;
+		
+		if(fast_compare(data, test_read, len) != 0) //检擦数据是否正确
 		{
-
-			*((uint32_t *)(data+2)) = 0;
+			*((uint32_t *)(data+2)) = STATE_VERIFY_ERR;
 		}
 		
+					
 		file_count += len;
 		frame_count++;
 	}
-	else
+	else							// 帧序列错误	
 	{
 		*(uint16_t *)data = frame_count;
-		*((uint16_t *)data+2) = 1;
+		*((uint16_t *)data+2) = START_FRAME_ERR;
 	}
 
-	if(file_count == fileLen)
+	if(file_count == fileLen)		//文件传输完成
 	{
 		frame_count = 0;
 		file_count = 0;

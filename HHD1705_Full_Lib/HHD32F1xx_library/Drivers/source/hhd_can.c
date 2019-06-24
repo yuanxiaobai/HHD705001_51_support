@@ -161,7 +161,7 @@ void CAN_DisableInt(HHD32F1_CAN_TypeDef *can, uint32_t intbit)
 * 例如 Ttseg1 = 7；Ttseg2 = 5；
   则波特率  = 7.5M/（3+7+5）= 500Kbps
 ********************************************************************************/
-void can_init(HHD32F1_CAN_TypeDef *can, EN_BAUD baud, uint32_t filterID, uint32_t mask)
+void can_init(HHD32F1_CAN_TypeDef *can, EN_BAUD baud, uint32_t canIDType, uint32_t filterID, uint32_t mask)
 {
 // 模块时钟	
 	SYSCON->SYSAPB1CLKCTRL.bit.CAN1CLK = 1;
@@ -185,22 +185,35 @@ void can_init(HHD32F1_CAN_TypeDef *can, EN_BAUD baud, uint32_t filterID, uint32_
 	if(baud == CAN_BAUD_1M)	
 	{
 	
-		can->BTR0.bit.BRP = 1;   
-		can->BTR1.bit.TSEG1 = 9;
-		can->BTR1.bit.TSEG2 = 3;	
+		can->BTR0.bit.BRP = 3;   			//15MHz
+		can->BTR1.bit.TSEG1 = 7;
+		can->BTR1.bit.TSEG2 = 0;	
 	}
 	else if(baud == CAN_BAUD_500K)
 	{
-		can->BTR0.bit.BRP = 2;
-		can->BTR1.bit.TSEG1 = 14;
-		can->BTR1.bit.TSEG2 = 3;
+//		can->BTR0.bit.BRP   = 2;				//10MHz
+//		can->BTR1.bit.TSEG1 = 13;
+//		can->BTR1.bit.TSEG2 = 4;
+		
+//		can->BTR0.bit.BRP   = 4;				//10MHz
+//		can->BTR1.bit.TSEG1 = 13;
+//		can->BTR1.bit.TSEG2 = 0;
+//		
+		can->BTR0.bit.BRP   = 2;				//10MHz
+		can->BTR1.bit.TSEG1 = 15;
+		can->BTR1.bit.TSEG2 = 2;
+		
 	}
 	else
 	{
 		
-		can->BTR0.bit.BRP = 1;   
-		can->BTR1.bit.TSEG1 = 7;
-		can->BTR1.bit.TSEG2 = 5;	
+//		can->BTR0.bit.BRP = 1;   
+//		can->BTR1.bit.TSEG1 = 9;
+//		can->BTR1.bit.TSEG2 = 3;
+
+		can->BTR0.bit.BRP = 4;				//10MHz
+		can->BTR1.bit.TSEG1 = 13;
+		can->BTR1.bit.TSEG2 = 0;		
 	}
 
 
@@ -209,8 +222,9 @@ void can_init(HHD32F1_CAN_TypeDef *can, EN_BAUD baud, uint32_t filterID, uint32_
 
 // 设置接收帧过滤，可以接收任何标识符
 	
-	if(filterID <= 0x7FF)
+	if(canIDType == CAN_Id_Standard)
 	{
+		filterID &= 0x7FF;
 		can->DATAINFO.FILTER.ACR[0].all  = ((filterID << 5) >> 8 ) & 0xFF;   //Identifier
 		can->DATAINFO.FILTER.ACR[1].all  = (filterID << 5) &0xE0 ;  		 //Identifier
 		can->DATAINFO.FILTER.ACR[2].all  = 0xFF;

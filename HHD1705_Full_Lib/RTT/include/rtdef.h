@@ -574,6 +574,7 @@ typedef struct rt_thread *rt_thread_t;
 
 #define RT_IPC_CMD_UNKNOWN              0x00            /**< unknown IPC command */
 #define RT_IPC_CMD_RESET                0x01            /**< reset IPC object */
+#define RT_IPC_CMD_FULL                 0x02            /**< check IPC full  ,JUST FOR MAILBOX*/
 
 #define RT_WAITING_FOREVER              -1              /**< Block forever until get resource. */
 #define RT_WAITING_NO                   0               /**< Non-block. */
