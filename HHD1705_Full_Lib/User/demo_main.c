@@ -43,7 +43,7 @@ static ST_PINS pins_table[] =
 	__HHD_PIN(D,    12,   0,    INPUT,  		GPIO_Mode_DEF),		//ARM_FPGA1_IO14
 	__HHD_PIN(D,    13,   0,    INPUT,  		GPIO_Mode_DEF),		//ARM_FPGA1_IO15
 	__HHD_PIN(D,    14,   0,    INPUT,  		GPIO_Mode_DEF),		//ARM_FPGA1_IO16
-	__HHD_PIN(D,    15,   0,    INPUT,  		GPIO_Mode_DEF),		//ARM_FPGA1_IO17
+	__HHD_PIN(D,    15,   0,    OUTPUT,  		GPIO_Mode_DEF),		//ARM_FPGA1_IO17
 
 	__HHD_PIN(E,    0,    0,    INPUT,  		GPIO_Mode_DEF),		//ARM_FPGA1_IO18
 	__HHD_PIN(E,    1,    0,    INPUT,  		GPIO_Mode_DEF),		//ARM_FPGA1_IO19
@@ -60,6 +60,8 @@ static ST_PINS pins_table[] =
 	__HHD_PIN(E,    12,   0,    INPUT,  		GPIO_Mode_DEF),		//ARM_FPGA1_IO29
 	__HHD_PIN(E,    13,   0,    INPUT,  		GPIO_Mode_DEF),		//ARM_FPGA1_IO30
 	__HHD_PIN(E,    14,   0,    INPUT,  		GPIO_Mode_DEF),		//ARM_FPGA1_IO31
+	
+	__HHD_PIN(D,    2,   0,    OUTPUT,  		GPIO_Mode_DEF),		//ARM_FPGA1_IO31
 
 };
 
@@ -77,9 +79,13 @@ void task_led(void *arg)
 		Delay(500);
 #ifdef CFG_USING_LED_BLINK			
 		GPIO_ResetPin(GPIOE, PIN2);
+//		GPIO_ResetPin(GPIOD, PIN2);
+		GPIO_ResetPin(GPIOD, PIN15);
 		
 		Delay(500);
 		GPIO_SetPin(GPIOE, PIN2);
+//		GPIO_SetPin(GPIOD, PIN15);
+		GPIO_SetPin(GPIOD, PIN2);
 #endif		
 	}
 }

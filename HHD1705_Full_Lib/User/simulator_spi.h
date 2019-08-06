@@ -33,7 +33,10 @@
 
 	#define SPI4_MOSI_PIN		PIN6  
 	#define SPI4_MOSI_PORT		GPIOD
-
+//	SPI ÖÐ¶ÏÒý½Å ÉèÖÃ
+	#define SPI4_INT_PIN		PIN1  
+	#define SPI4_INT_PORT		GPIOE
+	
 	#define SPI4_CS				SPI4_CS_PORT->OUT.bit.IO4
 	#define SPI4_CLK		    SPI4_SCK_PORT->OUT.bit.IO5	
 	#define SPI4_MOSI			SPI4_MOSI_PORT->OUT.bit.IO6

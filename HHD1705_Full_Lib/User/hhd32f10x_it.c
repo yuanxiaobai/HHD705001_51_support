@@ -16,6 +16,7 @@
 #include "hhd32f1xx.h"
 #include "HHD1705_lib.h"
 #include "can_task.h"
+#include "simulator_spi.h"
 
 
 
@@ -182,16 +183,46 @@ void CAN1_IRQHandler(void)
 //	info=(rt_uint32_t)&RxMessage;
 //	rt_mb_send(&mb, info);
 	
-	
 	can_entry(NULL);
-	
-	
-	
 	
 /////////////////////////////////////////////////////////////////////////////////////////	
 	CAN_SetCMD(CAN1, ReleaseRecBuf); // release recieve buffer
-
 }
+
+
+void EXTI9_5_IRQHandler(void)
+{
+	spi_irq();
+}
+
+void EXTI0_IRQHandler(void)
+{
+	spi_irq();
+}
+void EXTI1_IRQHandler(void)
+{
+	spi_irq();
+}
+void EXTI2_IRQHandler(void)
+{
+	spi_irq();
+}
+void EXTI3_IRQHandler(void)
+{
+	spi_irq();
+}
+void EXTI4_IRQHandler(void)
+{
+	spi_irq();
+}
+
+
+void EXTI15_10_IRQHandler(void)
+{
+	spi_irq();
+}
+
+
 
 
 /******************* (C) COPYRIGHT 2009 STMicroelectronics *****END OF FILE****/

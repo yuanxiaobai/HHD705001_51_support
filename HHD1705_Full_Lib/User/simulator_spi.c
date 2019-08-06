@@ -26,7 +26,9 @@ void spi_Init(void)
 	GPIO_ConfigPinsAsOutput(SPI4_CS_PORT, SPI4_CS_PIN);
 	GPIO_ConfigPinsAsOutput(SPI4_SCK_PORT, SPI4_SCK_PIN);	
 	GPIO_ConfigPinsAsInput(SPI4_MISO_PORT, SPI4_MISO_PIN);
-	GPIO_ConfigPinsAsOutput(SPI4_MOSI_PORT, SPI4_MOSI_PIN);			
+	GPIO_ConfigPinsAsOutput(SPI4_MOSI_PORT, SPI4_MOSI_PIN);		
+
+
 }
 
 /*****************************************************************************
@@ -164,7 +166,6 @@ void WriteByte(unsigned char data)
 	SPI4_CLK = 0;
 
 }
-
 
 
 

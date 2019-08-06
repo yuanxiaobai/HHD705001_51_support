@@ -47,6 +47,7 @@
 #define CHECK_FPGA_NUM	 0		/* 管控FPGA 编号*/
 #define CHECK_FPGA_ADDR	 251   	/* FPGA存放 启动完成标记地址*/
 #define MARK_FPGA_ADDR	 0		/* FPGA存放 槽位号地址*/
+#define IRQ_FPGA_ADDR    23		/* FPGA存放 中断类型寄存器地址*/
 #define FPGA_BOOT_OK	 0x5A5A0006
 
 // FPGA 固化功能 默认选择的FPGA
